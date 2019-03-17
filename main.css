@@ -1,0 +1,41 @@
+.container-fluid {
+    margin: 5%;
+    border: 1px solid black;
+    padding: 15px;
+}
+
+.col-md-6 {
+    border: 1px solid black;
+    padding: 15px;
+    margin: 2%;
+    max-width: 400px;
+}
+
+/*.col-sm-12 {
+    width: 40%;
+    border: 1px solid black;
+    padding: 25px;
+    margin-right: 5%;
+    margin-left: 5%;
+    height: 100%;
+}*/
+.form-control {
+    margin: 4%;
+}
+
+.btn-space {
+    margin-right: 25px;
+}
+
+body {
+    background-color: white;
+}
+
+table {
+    left: 10%;
+    width: 80%;
+    margin-left: 10%;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    text-align: center;
+}

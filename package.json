@@ -18,6 +18,10 @@
     "eslint-plugin-standard": "^4.0.0"
   },
   "dependencies": {
+    "body-parser": "^1.18.3",
+    "cors": "^2.8.5",
+    "moment": "^2.24.0",
+    "momentjs": "^2.0.0",
     "mysql": "^2.16.0"
   }
 }

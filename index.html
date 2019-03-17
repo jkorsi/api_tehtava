@@ -2,145 +2,65 @@
 <html lang="fin">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="main.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="main.js"></script>
+    <script src="node_modules/moment/moment.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
-        .container {
-            border: 1px solid black;
-            padding: 25px;
-        }
 
-        .btn-space {
-            margin-right: 25px;
-        }
-
-        body {
-            background-color: white;
-        }
     </style>
     <title>Title</title>
 </head>
 <body>
-<form role="form">
-    <div class="container" id="wholeContainer">
-        <h1>Syötä päivämääräväli</h1>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-6">
+            <form role="form">
 
+                <h1>Hae tapahtumaa</h1>
+                <div class="controls form-inline">
+                    <div class="form-group">
+                        <label for="startingDate">Alkupäivämäärä:</label>
+                        <input class="form-control" id="startingDate" name="startingDate" type="date"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="endingDate">Loppupäivämäärä:</label>
+                        <input class="form-control" id="endingDate" name="endingDate" type="date"/>
+                    </div>
+                </div>
+                <input id="submitQuery" onclick="makeQuery()" type="button" value="Lähetä">
 
-        <!-- <div class="col-sm-4"> -->
-        <!--<fieldset> -->
-        <div class="controls form-inline">
-            <div class="form-group">
-                <label for="startingDate">Alkupäivämäärä:</label>
-                <input type="date" class="form-control" id="startingDate" name="startingDate"/>
-            </div>
-
-            <div class="form-group">
-                <label for="endingDate">Loppupäivämäärä:</label>
-                <input type="date" class="form-control" id="endingDate" name="endingDate"/>
-            </div>
+            </form>
         </div>
+        <div class="col-md-6">
 
-        <div id="locationInfo" class="controls form-inline">
+            <h1>Luo tapahtuma</h1>
+            <form method="post">
+                Tapahtumapaikka:<br>
+                <input name="evLocation" type="text" value="">
+                <br>
+                Tapahtuman aika:<br>
+                <input id="evDate" name="date" type="date"/>
+                <br>
+                Esiintyjä:<br>
+                <input name="evStar" type="text" value="">
+                <br>
+                Tapahtuman tyyppi:<br>
+                <input name="evType" type="text" value="">
+                <br><br>
+                <input id="submitForm" onclick="submitForm()" type="submit" value="Luo">
+            </form>
 
         </div>
-        <input onclick="makeQuery()" type="button" value="Lähetä" id="submit">
     </div>
-
-</form>
-<script>
-
-    var json; //json is global...
-
-    function makeQuery() {
-        var startdate = document.getElementById("startingDate").value;
-        var enddate = document.getElementById("endingDate").value;
-        if (startdate.length == 0) { // fix this and support empty field
-            return;
-        } else {
-            var xmlhttp = new XMLHttpRequest();
-            xmlhttp.onreadystatechange = function () {
-                if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-                    json = JSON.parse(xmlhttp.responseText);
-                    //myFunction(resultArr);
-                    //document.getElementById("locationInfo").innerHTML = xmlhttp.responseText;
-                    if (json.numOfRows > 0) { // something found
-                        //console.log(json.numOfRows + ", " + json.rows[0].Location_place_name);
-                        showList(json);
-                    } else {
-                        document.getElementById("locationInfo").innerHTML = "<br/>Ei tapahtumatietoja tältä ajalta.";
-
-                    }
-
-                }
-            };
-            xmlhttp.open("GET", "http://localhost:8080/api/events?start=" + startdate + "&end=" + enddate, true);
-            xmlhttp.send();
-        }
-    }
-
-    function showList(json) {
-        //document.getElementById("locationInfo").innerHTML = "New text!";
-        var divElement = document.getElementById("locationInfo");
-
-        var i;
-        var unOrdered;
-        var listElement, nestedElement, unNestedElement;
-        var string;
-        for (i in json.rows) {
-            // create a form group div
-            unOrdered = document.createElement("ul");
-            unOrdered.setAttribute("class", "del"); // mark all these dynamically created elements to be "deleted"
-            divElement.appendChild(unOrdered);
-
-            listElement = document.createElement("li");
-            listElement.setAttribute("class", "del");
-            string = json.rows[i].Name;
-            listElement.innerHTML = string;
-            unOrdered.appendChild(listElement);
-            nestedElement = document.createElement("ul");
-            nestedElement.setAttribute("class", "del");
-            listElement.appendChild(nestedElement);
-            unNestedElement = document.createElement("li");
-            unNestedElement.setAttribute("class", "del");
-            string = json.rows[i].Type + ", " + json.rows[i].Date + ", " + json.rows[i].Time + ", " + json.rows[i].Location_place_name;
-            unNestedElement.innerHTML = string;
-            nestedElement.appendChild(unNestedElement);
-        }
-        // delete submit-button
-        var submitBtn = document.getElementById("submit");
-        var parent = document.getElementById("wholeContainer");
-        parent.removeChild(submitBtn);
-        // add ok-button
-        okBtn = document.createElement("input");
-        okBtn.setAttribute("type", "button");
-        okBtn.setAttribute("value", "Ok");
-        okBtn.setAttribute("id", "Ok");
-        okBtn.setAttribute("onclick", "Clear()");
-        parent.appendChild(okBtn);
-    }
-
-
-    function Clear() {
-
-        $('.del').remove(); // delete unordered list with jQuery
-
-        // delete Ok-button
-        var btn = document.getElementById("Ok");
-        var parent = document.getElementById("wholeContainer");
-        parent.removeChild(btn);
-
-        // put submit-button again on the form...
-        submitBtn = document.createElement("input");
-        submitBtn.setAttribute("type", "button");
-        submitBtn.setAttribute("value", "Lähetä");
-        submitBtn.setAttribute("id", "submit");
-        submitBtn.setAttribute("onclick", "makeQuery()");
-        var parent = document.getElementById("wholeContainer");
-        parent.appendChild(submitBtn);
-
-    }
-</script>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="" id="locationInfo"></div>
+        </div>
+    </div>
+</div>
 </body>
 
 </html>
